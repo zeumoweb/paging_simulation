@@ -1,0 +1,5 @@
+# VSCode
+
+*.vscode
+*.h.ghch
+*.out
