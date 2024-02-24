@@ -2,7 +2,7 @@
 
 int main() {
 
-    requestRandomMemory();
+    // requestRandomMemory();
     // printf("Hello, World!\n");
     return 0;
 }
