@@ -1,32 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "page_structures.h"
 
 //initialising variables and functions
 int VirtualMemory = 0;
-int outerPageSize = 0;
-int innerPageSize = 0;
+int numPageEntries = 0; //number of entries for the outer and inner pages
 int offset = 0;
 void getVirtualMemory(int vSize);
 void calculatePageDetails();
 void initialisePageTables();
 void freePageTables();
 
-//creating structure for first-level table entry
-typedef struct {
-    int valid_bit;
-    int second_level_address;
-} OuterPageEntry;
-
-//creating structure for second-level table entry
-typedef struct {
-    int valid_bit;
-    int frame_number;
-} InnerPageEntry;
-
 //creating pointers for dynamic arrays
-OuterPageEntry* OuterPageTable;
-InnerPageEntry* InnerPageTable;
+page_entry_t* OuterPageTable;
+page_entry_t** InnerPageTable;
 
 //obtaining virtual memory from main file
 void getVirtualMemory(int vSize){
@@ -37,16 +25,15 @@ void getVirtualMemory(int vSize){
 void calculatePageDetails(){
     offset = (int)(VirtualMemory/4);
     int tableSize = (int)((VirtualMemory - offset)/2);
-    outerPageSize= tableSize;
-    innerPageSize = tableSize;
+    numPageEntries = tableSize;
 }
 
 //initialising the values in the page table
 void initialisePageTables(){
 
     //dynamically allocating memory for the two pages
-    OuterPageTable = (OuterPageEntry*) malloc(outerPageSize * sizeof(OuterPageEntry));
-    InnerPageTable = (InnerPageEntry*) malloc(innerPageSize * sizeof(InnerPageEntry));
+    OuterPageTable = (page_entry_t*) malloc(numPageEntries * sizeof(page_entry_t));
+    InnerPageTable = (page_entry_t**) malloc(numPageEntries * sizeof(page_entry_t*));
     
     //checking if memory allocation was successful
     if (OuterPageTable == NULL || InnerPageTable == NULL){
@@ -55,24 +42,58 @@ void initialisePageTables(){
     }
 
     //initialising entries
-    for (int i=0; i < outerPageSize; i++){
-        OuterPageTable[i].valid_bit = 0;
-        OuterPageTable[i].second_level_address = -1;
-        InnerPageTable[i].valid_bit = 0;
-        InnerPageTable[i].frame_number = -1;
+    for (int i=0; i < numPageEntries; i++){
+        OuterPageTable[i].valid = 0;
+        OuterPageTable[i].frame_number = -1;
+        
+        //initialising the inner page table for each entry in the outer table
+        InnerPageTable[i] = (page_entry_t*) malloc(numPageEntries * sizeof(page_entry_t*));
+        
+        for (int j=0; j < numPageEntries; j++){
+            //allocating memory for each jth entry in the inner page table
+            InnerPageTable[i][j].valid = 0;
+            InnerPageTable[i][j].frame_number = -1;
+        }
+
     }
 }
 
+//function to print the inner page tables
+void printInnerPageTable() {
+    for (int i = 0; i < numPageEntries; i++) {
+        for (int j = 0; j < numPageEntries; j++) {
+            printf("InnerPageTable[%d][%d]: valid_bit=%d, frame_number=%d\n",
+                   i, j, InnerPageTable[i][j].valid, InnerPageTable[i][j].frame_number);
+        }
+        printf("\n");
+    }
+}
+
+//function to print the outer page tables
+void printOuterPageTable() {
+    for (int i = 0; i < numPageEntries; i++) {
+        printf("OuterPageTable[%d]: valid_bit=%d, frame_number=%d\n",
+               i, OuterPageTable[i].valid, OuterPageTable[i].frame_number);
+    }
+}
 
 void freePageTables(){
-    free(OuterPageTable);
+    // Deallocating memory
+    for (int i = 0; i < numPageEntries; i++) {
+        free(InnerPageTable[i]);
+    }
     free(InnerPageTable);
+    free(OuterPageTable);
+
 }
 
 int main(){
     getVirtualMemory(pow(2,4));
     calculatePageDetails();
     initialisePageTables();
+    printOuterPageTable();
+    printf("\n\n");
+    printInnerPageTable();
     freePageTables();
 
 return 0;
