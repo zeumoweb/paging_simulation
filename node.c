@@ -3,10 +3,9 @@
 #include "node.h"
 
 //function to create a new node
-struct Node* createNode (int processNum, int frameNum){
+struct Node* createNode (int frameNum){
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
     if (newNode != NULL){
-        newNode->processNum = processNum;
         newNode->frameNum = frameNum;
         newNode->next = NULL;
     }
@@ -16,15 +15,15 @@ struct Node* createNode (int processNum, int frameNum){
 //function to print linked list
 void printList(struct Node* head){
     while (head != NULL){
-        printf("%d -> ", head->processNum);
+        printf("%d -> ", head->frameNum);
         head = head->next;
     }
     printf("NULL\n");
 }
 
 //function to insert node at the end of the linked list
-void insertAtEnd(struct Node** head, struct Node** tail, int processNum, int frameNum){
-    struct Node* newNode = createNode(processNum, frameNum);
+void insertAtEnd(struct Node** head, struct Node** tail, int frameNum){
+    struct Node* newNode = createNode(frameNum);
     if (newNode != NULL){
         if (*tail == NULL){
             //if the list is empty then set both the head and
@@ -40,26 +39,24 @@ void insertAtEnd(struct Node** head, struct Node** tail, int processNum, int fra
 }
 
 //function to remove and return a node
-int* removeNodeByValue(struct Node **head, struct Node **tail, int value){
-    static int removedData[2]; //an array to store the removed node
-    
+int removeMiddle(struct Node **head, struct Node **tail, int value){    
+    int removedData = 0;
+
     if (*head == NULL){
-        removedData[0] = -1;
-        removedData[1] = -1;
+        removedData = -1;
         return removedData;
     }
 
     struct Node *curr = *head;
     struct Node *prev = NULL;
 
-    while(curr != NULL && curr->processNum != value){ //checking if value is in list
+    while(curr != NULL && curr->frameNum != value){ //checking if value is in list
         prev = curr;
         curr = curr->next;
     }
 
     if (curr == NULL){ //value was not found
-        removedData[0] = -1;
-        removedData[1] = -1;
+        removedData = -1;
         return removedData;
     }
 
@@ -80,8 +77,7 @@ int* removeNodeByValue(struct Node **head, struct Node **tail, int value){
     //remove any link the removedNode may have with the list
     curr->next = NULL;
 
-    removedData[0] = curr->processNum;
-    removedData[1] = curr->frameNum;
+    removedData = curr->frameNum;
 
     //free memory for removed node
     free(curr);
@@ -89,12 +85,11 @@ int* removeNodeByValue(struct Node **head, struct Node **tail, int value){
     return removedData;
 }
 
-int* removeLRUNode(struct Node **head, struct Node **tail){
-    static int removedData[2]; //an array to store the removed node
+int removeAtBeginning(struct Node **head, struct Node **tail){
+    int removedData = 0;
 
     if (*head == NULL){
-        removedData[0] = -1;
-        removedData[1] = -1;
+        removedData = -1;
         return removedData;
     }
 
@@ -111,8 +106,7 @@ int* removeLRUNode(struct Node **head, struct Node **tail){
     //remove any link the removedNode may have with the list
     removedNode->next = NULL;
 
-    removedData[0] = removedNode->processNum;
-    removedData[1] = removedNode->frameNum;
+    removedData = removedNode->frameNum;
 
     //free memory for removed node
     free(removedNode);
@@ -132,9 +126,9 @@ void freeList(struct Node* head) {
 }
 
 //function to check if a particular node (process) exists
-int isValuePresent(struct Node* head, int processNum){
+int isValuePresent(struct Node* head, int frameNum){
     while (head != NULL){
-        if (head->processNum == processNum){
+        if (head->frameNum == frameNum){
             return 1;
         }
         head = head->next; 
@@ -148,30 +142,30 @@ int isValuePresent(struct Node* head, int processNum){
 //     struct Node* tail = NULL;
 
 //     // Insert some nodes
-//     insertAtEnd(&head, &tail, 1, 0);
+//     insertAtEnd(&head, &tail, 0);
 //     printList(head);
 //     printf("\n\n");
-//     insertAtEnd(&head, &tail, 2, 1);
-//     insertAtEnd(&head, &tail, 3, 0);
+//     insertAtEnd(&head, &tail, 1);
+//     insertAtEnd(&head, &tail, 2);
 
 //     // Print the list
 //     printf("Original list: ");
 //     printList(head);
 
 //     // Remove a node and print the updated list
-//     int* removedValue = removeNodeByValue(&head, &tail, 2);
-//     printf("Removed node value: %d\n", removedValue[0]);
+//     int removedValue = removeMiddle(&head, &tail, 1);
+//     printf("Removed node value: %d\n", removedValue);
 
 //     printf("Updated list: ");
 //     printList(head);
 
-//     insertAtEnd(&head, &tail, removedValue[0], removedValue[1]);
+//     insertAtEnd(&head, &tail, removedValue);
 //     printf("\n Updated list: ");
 //     printList(head);
 
 //     // Remove a node and print the updated list
-//     removedValue = removeLRUNode(&head, &tail);
-//     printf("Removed node value: %d\n", removedValue[0]);
+//     removedValue = removeAtBeginning(&head, &tail);
+//     printf("Removed node value: %d\n", removedValue);
 
 //     printf("\n Updated list: ");
 //     printList(head);
