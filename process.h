@@ -11,13 +11,13 @@ typedef struct Process {
     int numberOfFaults;
     int currentWord;
     int currentReferenceNumber;
-    int numberOfEvictions = 0;
+    int numberOfEvictions;
     bool isFinished;
-    int totalResidencyTime = 0;
+    int totalResidencyTime;
 } Process;
 
 
-Process *createProcess(int processID, double a, double b, double c, int currentWord, int currentReferenceNumber);
+Process *createProcess(int processID, double a, double b, double c, int numberOfFaults, int currentWord, int currentReferenceNumber, int numberOfEvictions, bool isFinished, int totalResidencyTime);
 
 
 // Destructor for Process struct

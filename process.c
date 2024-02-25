@@ -1,7 +1,7 @@
 #include "process.h"
 
 // Constructor for Process struct
-Process *createProcess(int processID, double a, double b, double c, int currentWord, int currentReferenceNumber) {
+Process *createProcess(int processID, double a, double b, double c, int numberOfFaults, int currentWord, int currentReferenceNumber, int numberOfEvictions, bool isFinished, int totalResidencyTime) {
     Process *process = malloc(sizeof(Process));
     if (process == NULL) {
         fprintf(stderr, "Memory allocation failed for process\n");
@@ -14,6 +14,10 @@ Process *createProcess(int processID, double a, double b, double c, int currentW
     process->C = c;
     process->currentWord = currentWord;
     process->currentReferenceNumber = currentReferenceNumber;
+    process->numberOfFaults = numberOfFaults;
+    process->numberOfEvictions = numberOfEvictions;
+    process->isFinished = isFinished;
+    process->totalResidencyTime = totalResidencyTime;
     return process;
 }
 
@@ -27,7 +31,7 @@ void setNextReferencedWord(Process *process, int randomNumber, int PROCESS_SIZE,
     double A = process->A;
     double B = process->B;
     double C = process->C;
-    double quotient = (double)randomNumber / (double)(INT_MAX + 1);
+    double quotient = (double)randomNumber / (double)(INT_MAX + 1.0);
 
     if (quotient < A) {
         // Case 0: Sequential Access Pattern

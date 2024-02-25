@@ -87,14 +87,14 @@ void freePageTables(){
 
 }
 
-int main(){
-    getVirtualMemory(pow(2,4));
-    calculatePageDetails();
-    initialisePageTables();
-    printOuterPageTable();
-    printf("\n\n");
-    printInnerPageTable();
-    freePageTables();
+// int main(){
+//     getVirtualMemory(pow(2,4));
+//     calculatePageDetails();
+//     initialisePageTables();
+//     printOuterPageTable();
+//     printf("\n\n");
+//     printInnerPageTable();
+//     freePageTables();
 
-return 0;
-}
+// return 0;
+// }
