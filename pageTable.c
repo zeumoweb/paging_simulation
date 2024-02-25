@@ -1,16 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "page_structures.h"
-
-//initialising variables and functions
-int VirtualMemory = 0;
-int numPageEntries = 0; //number of entries for the outer and inner pages
-int offset = 0;
-void getVirtualMemory(int vSize);
-void calculatePageDetails();
-void initialisePageTables();
-void freePageTables();
+#include "pageTable.h"
 
 //creating pointers for dynamic arrays
 page_entry_t* OuterPageTable;
