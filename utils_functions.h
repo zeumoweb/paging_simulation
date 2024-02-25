@@ -1,7 +1,9 @@
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include "pageTable.h"
 #include <time.h>
+#include "process.h"
 
 
 int bitLength(int n);
@@ -15,3 +17,6 @@ int get_physical_address(int logical_address, page_entry_t* L1_table, page_entry
 int generateRandomNumberInRange(int lowerBound, int upperBound);
 
 int get_page_number(int logical_address, page_entry_t* L1_table, page_entry_t** L2_tables, int l1_size, int l2_size, int page_size);
+
+// Function to insert a new page into the two level page table
+void insertToPageTables(int logical_address, page_entry_t* L1_table, page_entry_t** L2_tables, int l1_size, int l2_size, int page_size, int frame_number);

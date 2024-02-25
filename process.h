@@ -1,7 +1,9 @@
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
+#include "replacement_algorithms.h"
 
 typedef struct Process {
     int processID;
@@ -9,7 +11,7 @@ typedef struct Process {
     double B;
     double C;
     int numberOfFaults;
-    int currentWord;
+    int currentAddress;
     int currentReferenceNumber;
     int numberOfEvictions;
     bool isFinished;
@@ -17,7 +19,7 @@ typedef struct Process {
 } Process;
 
 
-Process *createProcess(int processID, double a, double b, double c, int numberOfFaults, int currentWord, int currentReferenceNumber, int numberOfEvictions, bool isFinished, int totalResidencyTime);
+Process *createProcess(int processID, double a, double b, double c, int numberOfFaults, int currentAddress, int currentReferenceNumber, int numberOfEvictions, bool isFinished, int totalResidencyTime);
 
 
 // Destructor for Process struct
@@ -43,4 +45,14 @@ int getCurrentPage(Process *process, int pageSize);
  * @param PROCESS_SIZE The total size of the process memory in words.
  * @param NUMBER_OF_REFERENCES_PER_PROCESS The expected number of references per process.
  */
-void setNextReferencedWord(Process *process, int randomNumber, int PROCESS_SIZE, int NUMBER_OF_REFERENCES_PER_PROCESS);
+void setNextReferencedAddress(Process *process, int randomNumber, int PROCESS_SIZE, int NUMBER_OF_REFERENCES_PER_PROCESS);
+
+void printOutput(Process **process_queue, int GLOBAL_EVICTIONS, int num_process);
+
+// Function to check if all processes are done
+bool areAllProcessesFinished(Process **process_queue, int SIZE);
+
+// Function to handle page fault
+int handlePageFault(bool IS_VERBOSE, Process **process_queue, FrameTableEntry **frame_table, int TOTAL_NUMBER_OF_PAGES, int PAGE_SIZE, int CURRENT_TIME, int *GLOBAL_EVICTIONS, int process_id, int current_page);
+
+void freeProcessQueue(Process **process_queue, int SIZE);

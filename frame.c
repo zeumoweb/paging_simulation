@@ -69,6 +69,5 @@ bool frameTableIsFull(FrameTableEntry **frameTable, int TOTAL_NUMBER_OF_FRAMES)
             numberOfActivePages++;
         }
     }
-    printf("number of active: %d, and %d \n", numberOfActivePages, TOTAL_NUMBER_OF_FRAMES);
     return numberOfActivePages == TOTAL_NUMBER_OF_FRAMES;
 }
