@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "page_structures.h"
+#include "pageTable.h"
+#include <time.h>
 
 
 int bitLength(int n);
@@ -10,3 +11,7 @@ page_entry_t* get_page_entry(int logical_address, page_entry_t* L1_table, page_e
 
 // Function to get the actual physical address from the logical address
 int get_physical_address(int logical_address, page_entry_t* L1_table, page_entry_t** L2_tables, int L1_TABLE_SIZE, int L2_TABLE_SIZE, int PAGE_SIZE);
+
+int generateRandomNumberInRange(int lowerBound, int upperBound);
+
+int get_page_number(int logical_address, page_entry_t* L1_table, page_entry_t** L2_tables, int l1_size, int l2_size, int page_size);
