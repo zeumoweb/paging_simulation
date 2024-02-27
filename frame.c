@@ -3,7 +3,7 @@
 FrameTableEntry *createFrameTableEntry(int processNumber, int pageNumber, bool isLoaded,
                                        bool isModified, int timeAdded, int frameTableIndex, bool isActive)
 {
-    FrameTableEntry *entry = malloc(sizeof(FrameTableEntry));
+    FrameTableEntry *entry = (FrameTableEntry*) malloc(sizeof(FrameTableEntry));
     if (entry == NULL)
     {
         fprintf(stderr, "Memory allocation failed for FrameTableEntry\n");

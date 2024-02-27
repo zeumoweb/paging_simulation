@@ -3,7 +3,7 @@
 
 // Constructor for Process struct
 Process *createProcess(int processID, double a, double b, double c, int numberOfFaults, int currentAddress, int currentReferenceNumber, int numberOfEvictions, bool isFinished, int totalResidencyTime) {
-    Process *process = malloc(sizeof(Process));
+    Process *process =  (Process*) malloc(sizeof(Process));
     if (process == NULL) {
         fprintf(stderr, "Memory allocation failed for process\n");
         exit(1);
@@ -80,7 +80,7 @@ void printOutput(Process **process_queue, int GLOBAL_EVICTIONS, int num_process)
 
     // Iterate through the processes
     printf("\n\n\n");
-    printf("Overall Statisics \n\n");
+    printf("Individual Process Statisics \n\n");
     for (int i = 0; i < num_process; ++i)
     {
         Process *currentProcess = process_queue[i];
@@ -89,32 +89,40 @@ void printOutput(Process **process_queue, int GLOBAL_EVICTIONS, int num_process)
 
         if (currentProcess->numberOfEvictions > 0)
         {
-            printf(" and %.1f average residency\n",
+            printf(" and %.1f average residency \n",
                    (double)currentProcess->totalResidencyTime / currentProcess->numberOfEvictions);
             totalResidencySum += currentProcess->totalResidencyTime;
         }
         else
         {
-            printf(".\n\tWith no evictions, the average residence is undefined.");
+            printf(".\n\tWith no evictions, the average residence is undefined. \n");
         }
     }
 
-    printf("\nThe total number of faults is %d", totalNumberOfFaults);
+    printf("\n\n");
+    printf("Overall Statistics \n\n");
+
+    printf("\nThe total number of page faults is %d\n", totalNumberOfFaults);
+    printf("The total number of evictions is %d\n", GLOBAL_EVICTIONS);
+    double miss_rate = (double)(totalNumberOfFaults) / (num_process*process_queue[0]->currentReferenceNumber);
+    printf("Hit Rate: %.2f\n", 1 - miss_rate);
+    printf("Miss Rate: %.2f\n", miss_rate);
+
 
     if (GLOBAL_EVICTIONS != 0)
     {
-        printf(" and the overall average residency is %.1f.\n\n",
+        printf("The and the overall average residency is %.1f.\n\n",
                (double)totalResidencySum / GLOBAL_EVICTIONS);
     }
     else
     {
-        printf(".\n\tWith no evictions, the overall average residence is undefined.\n");
+        printf(".\n\tWith no evictions, the overall average residence is undefined.\n\n");
     }
 }
 
 
 
-int handlePageFault(bool IS_VERBOSE, Process **process_queue, FrameTableEntry **frame_table, int TOTAL_NUMBER_OF_PAGES, int PAGE_SIZE, int CURRENT_TIME, int *GLOBAL_EVICTIONS, int process_id, int current_page)
+int handlePageFault(char* replacement_policy, bool IS_VERBOSE, Process **process_queue, FrameTableEntry **frame_table, int TOTAL_NUMBER_OF_PAGES, int PAGE_SIZE, int CURRENT_TIME, int *GLOBAL_EVICTIONS, int process_id, int current_page)
 {
 
     int frameIndex = -1;
@@ -126,8 +134,7 @@ int handlePageFault(bool IS_VERBOSE, Process **process_queue, FrameTableEntry **
     if (frameTableIsFull(frame_table, TOTAL_NUMBER_OF_PAGES))
     {
         // Page table is full, Evict a frame based on a replacement policy
-        puts("Page table is full, evicting a frame");
-        FrameTableEntry *evictedFrame = evict("random", frame_table, TOTAL_NUMBER_OF_PAGES, GLOBAL_EVICTIONS);
+        FrameTableEntry *evictedFrame = evict(replacement_policy, frame_table, TOTAL_NUMBER_OF_PAGES, GLOBAL_EVICTIONS);
 
         if (evictedFrame == NULL)
         {
@@ -151,14 +158,13 @@ int handlePageFault(bool IS_VERBOSE, Process **process_queue, FrameTableEntry **
         frame_table[evictedFrameIndex] = newFrame;
 
         if (IS_VERBOSE)
-            printf("evicting page %d of %d from frame %d\n",
+            printf("Evicting page %d of process id #%d from frame %d \n",
                    evictedPage, evictedFrame->processNumber + 1, evictedFrameIndex);
         frameIndex = evictedFrameIndex;
     } // End of dealing with page miss: page table was full, page was evicted
     else
     {
         // when page is brought in, OS resets R = M = 0 (R == referenced, M == modified)
-        puts("Page table is not full, using free frame");
         if (frameTableIsFull(frame_table, TOTAL_NUMBER_OF_PAGES))
         {
             printf("Error: Table is full but should not be \n");
@@ -189,7 +195,7 @@ int handlePageFault(bool IS_VERBOSE, Process **process_queue, FrameTableEntry **
                 CURRENT_TIME, indexOdHighestFreeFrame, true);
 
             if (IS_VERBOSE)
-                printf("using free frame %d\n", indexOdHighestFreeFrame);
+                printf("Using free frame %d\n", indexOdHighestFreeFrame);
             
             frameIndex = indexOdHighestFreeFrame;
         }

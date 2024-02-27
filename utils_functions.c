@@ -49,9 +49,6 @@ int get_page_number(int logical_address, page_entry_t *L1_table, page_entry_t **
     int L2_page_number = (logical_address >> bitLength(page_size - 1)) & (l2_size - 1);
     int offset = logical_address & (page_size - 1);
 
-    printf("page number: %d\n", L2_page_number);
-    printf("Logical Address: %d\n", logical_address);
-
     return L2_page_number;
 }
 
@@ -101,4 +98,42 @@ int generateRandomNumberInRange(int lowerBound, int upperBound)
     int randomNumber = (rand() % (upperBound - lowerBound + 1)) + lowerBound;
 
     return randomNumber;
+}
+
+
+
+void validateArgs(int argc, char *argv[]) {
+    if (argc != 9) {
+        perror("Invalid number of arguments provided. Please provide 8 arguments. \n");
+        exit(1);
+    }
+
+    int offset = 0;
+    for (int i = 1; i < argc - 1; ++i) {
+       char* endptr;
+        long value = strtol(argv[i], &endptr, 10); 
+        if (*endptr != '\0') {
+            fprintf(stderr, "Error: Invalid integer at argument %d\n", i + 1);
+            exit(1);
+        }
+        if (value < 0) {  // Check for negative values
+            fprintf(stderr, "Error: Input values must be non-negative\n");
+            exit(1);
+        }
+    }
+}
+
+
+
+void setFlags(int argc, char *argv[], int *MACHINE_SIZE, int *PAGE_SIZE, int *PROCESS_SIZE, int *MEMORY_ACCESS_PATTERN, int *NUMBER_OF_REFERENCES_PER_PROCESS, int *NUMBER_OF_PROCESS, bool *IS_VERBOSE, char **REPLACEMENT_ALGORITHM, int *TOTAL_NUMBER_OF_PAGES) {
+    *MACHINE_SIZE = atoi(argv[1]);
+    *PAGE_SIZE = atoi(argv[2]);
+    *PROCESS_SIZE = atoi(argv[3]);
+    *MEMORY_ACCESS_PATTERN = atoi(argv[4]);
+    *NUMBER_OF_REFERENCES_PER_PROCESS = atoi(argv[5]);
+    *NUMBER_OF_PROCESS = atoi(argv[6]);
+    *IS_VERBOSE = (atoi(argv[7]) == 1);  // Invert logic
+    *REPLACEMENT_ALGORITHM = argv[8];
+
+    *TOTAL_NUMBER_OF_PAGES = (int)ceil((double)*MACHINE_SIZE / *PAGE_SIZE);
 }
