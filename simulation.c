@@ -24,6 +24,7 @@ Process **initializeProcessQueue(int access_pattern_number, int PROCESS_SIZE, in
         break;
     case 3:
         // Case 3: 4 processes
+        printf("Case 3: 4 processes\n");
         for (int i = 0; i < numProcesses; ++i)
         {
             process_queue[i] = createProcess(i, 0, 0, 0, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
@@ -39,13 +40,13 @@ Process **initializeProcessQueue(int access_pattern_number, int PROCESS_SIZE, in
             process_queue[i] = createProcess(i, 0.750, 0.250, 0, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
             if (i + 1 >= numProcesses)
                 break;
-            process_queue[i + 1] = createProcess(i, 0.750, 0, 0.250, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
+            process_queue[i + 1] = createProcess(i + 1, 0.750, 0, 0.250, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
             if (i + 2 >= numProcesses)
                 break;
-            process_queue[i + 2] = createProcess(i, 0.750, 0.125, 0.125, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
+            process_queue[i + 2] = createProcess(i + 2, 0.750, 0.125, 0.125, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
             if (i + 3 >= numProcesses)
                 break;
-            process_queue[i + 3] = createProcess(i, 0.500, 0.125, 0.125, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
+            process_queue[i + 3] = createProcess(i + 3, 0.500, 0.125, 0.125, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
         }
 
         break;

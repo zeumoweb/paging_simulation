@@ -39,7 +39,7 @@ int main(int argv, char *argc[])
 
     // Initialize Two level page table
     page_entry_t *outer_page_table = createOuterPageTable(OuterPageTableSize);
-    page_entry_t **inner_page_tables = createInnerPageTable(InnerPageTableSize, page_length);
+    page_entry_t **inner_page_table = createInnerPageTable(InnerPageTableSize, page_length);
 
     int CURRENT_TIME = 1;
 
@@ -62,19 +62,17 @@ int main(int argv, char *argc[])
                     int random = generateRandomNumberInRange(0, process_queue[i]->currentReferenceNumber - 1);
                     logical_address = process_address_history[i][random];
                 }
-                int current_page = get_page_number(logical_address, outer_page_table, inner_page_tables, InnerPageTableSize, OuterPageTableSize, PAGE_SIZE);
+                int current_page = get_page_number(logical_address, outer_page_table, inner_page_table, InnerPageTableSize, OuterPageTableSize, PAGE_SIZE);
                 int randomNumber = generateRandomNumberInRange(2013279579, 2013279579 + 100000); // ToDo: Get random number from file or generate it
 
-                printf("Process #%d references address %d (page %d) at time %d: ", i + 1, logical_address, current_page, CURRENT_TIME);
-
+                printf("Process #%d references address 0x%x (page %d) at time %d: ", i + 1, logical_address, current_page, CURRENT_TIME);
                 // page table hit
-                if (frameTableIsHit(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES))
+                if (get_physical_address(logical_address, outer_page_table, inner_page_table, OuterPageTableSize, InnerPageTableSize, PAGE_SIZE) != 1 && frameTableIsHit(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES))
                 {
                     // frame table  is hit
                     int hitIndex = hitFrame(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES);
                     frame_table[hitIndex]->isLoaded = true;
-
-                    printf("Hit in frame %d\n", hitFrame(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES));
+                    printf("Hit in frame %d\n", hitIndex);
                 }
                 else
                 {
@@ -82,7 +80,7 @@ int main(int argv, char *argc[])
                     int frame_index = handlePageFault(REPLACEMENT_ALGORITH, process_queue, frame_table, TOTAL_NUMBER_OF_FRAMES, PAGE_SIZE, CURRENT_TIME, &GLOBAL_EVICTIONS, i, current_page);
 
                     // Update the page tables with the new page
-                    insertToPageTables(logical_address, outer_page_table, inner_page_tables, InnerPageTableSize, OuterPageTableSize, page_length, frame_index);
+                    insertToPageTables(logical_address, outer_page_table, inner_page_table, InnerPageTableSize, OuterPageTableSize, page_length, frame_index);
                 } // End of dealing with page miss
 
                 randomNumber = generateRandomNumberInRange(2013279579, 2013279579 + 100000); // ToDo: Get random number from file or generate it
@@ -102,7 +100,7 @@ int main(int argv, char *argc[])
     printOutput(process_queue, GLOBAL_EVICTIONS, NUMBER_OF_PROCESS);
 
     // Free all used memory
-    freePageTables(inner_page_tables, outer_page_table, InnerPageTableSize);
+    freePageTables(inner_page_table, outer_page_table, InnerPageTableSize);
     freeFrameTable(frame_table, TOTAL_NUMBER_OF_FRAMES);
     freeProcessQueue(process_queue, NUMBER_OF_PROCESS);
     return 0;

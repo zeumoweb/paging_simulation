@@ -10,17 +10,17 @@ test1() {
 
 test2() {
     echo "Running Test 2..."
-    ./program 20 8 100 1 10 4 random
+    ./program 20 8 100 2 10 4 random
 }
 
 test3() {
     echo "Running Test 3..."
-    ./program 20 10 1000 3 10 4 lifo
+    ./program 20 8 100 3 10 4 lifo
 }
 
 test4() {
     echo "Running Test 4..."
-    ./program 20 10 1000 3 10 4 random
+    ./program 60 8 100 4 10 4 random
 }
 
 # Main function to select and run tests
