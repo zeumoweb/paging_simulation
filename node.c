@@ -13,7 +13,7 @@ struct Node* createNode (int frameNum){
 }
 
 //function to print linked list
-void printList(struct Node* head){
+void printList(struct Node* head) {
     while (head != NULL){
         printf("%d -> ", head->frameNum);
         head = head->next;

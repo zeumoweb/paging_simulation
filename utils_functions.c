@@ -52,9 +52,9 @@ int get_page_number(int logical_address, page_entry_t *L1_table, page_entry_t **
     return L2_page_number;
 }
 
+
 void insertToPageTables(int logical_address, page_entry_t *L1_table, page_entry_t **L2_tables, int l1_size, int l2_size, int page_size, int frame_number)
 {
-
     // Extract L1_page_number, L2_page_number, and offset from logical address
     int L1_page_number = (logical_address >> (bitLength(l1_size - 1) + bitLength(page_size - 1))) & (l1_size - 1);
     int L2_page_number = (logical_address >> bitLength(page_size - 1)) & (l2_size - 1);

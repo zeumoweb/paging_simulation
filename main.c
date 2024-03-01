@@ -75,7 +75,7 @@ int main(int argv, char *argc[])
                     break;
 
                 int current_page = get_page_number(process_queue[i]->currentAddress, outer_page_table, inner_page_tables, InnerPageTableSize, OuterPageTableSize, PAGE_SIZE);
-                int randomNumber = generateRandomNumberInRange(124313650, 124313650 + 100000); // ToDo: Get random number from file or generate it
+                int randomNumber = generateRandomNumberInRange(2013279579, 2013279579 + 100000); // ToDo: Get random number from file or generate it
                 if (IS_VERBOSE)
                 {
                     printf("Process #%d references word %d (page %d) at time %d: ", i + 1, process_queue[i]->currentAddress, current_page, CURRENT_TIME);
@@ -112,7 +112,7 @@ int main(int argv, char *argc[])
 
                 // Randomly pick either the current address of the process or an address in its history.
                 int probability = generateRandomNumberInRange(0, 1);
-                if (probability < 0.7)
+                if (probability < 0.1)
                 {
                     int random = generateRandomNumberInRange(0, process_queue[i]->currentReferenceNumber - 1);
                     process_queue[i]->currentAddress = process_address_history[i][random];

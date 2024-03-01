@@ -1,4 +1,5 @@
 #include "frame.h"
+#include "utils_functions.h"
 
 FrameTableEntry *createFrameTableEntry(int processNumber, int pageNumber, bool isLoaded,
                                        bool isModified, int timeAdded, int frameTableIndex, bool isActive)
