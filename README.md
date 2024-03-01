@@ -48,7 +48,7 @@ Below is the list of command line arguments expected by the program and their ex
 1. Machine Size
 2. Page Size
 3. Process Size
-4. Memory Access Pattern (1 for sequencial, 2 for localized, 3 for random and 4 for memory access pattern mixed)
+4. Memory Access Pattern (1 for sequential, 2 for localized, 3 for random and 4 for memory access pattern mixed)
 5. Maximum number of memory references per Process
 6. Number of Processes
 7. Eviction Algorithm

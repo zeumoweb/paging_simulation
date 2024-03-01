@@ -8,7 +8,7 @@ Process **initializeProcessQueue(int access_pattern_number, int PROCESS_SIZE, in
     {
     case 1:
         // Case 1: Sequencial Access Pattern
-        printf("Case 1: Sequencial Access Pattern\n");
+        // printf("Case 1: Sequencial Access Pattern\n");
         for (int i = 0; i < numProcesses; ++i)
         {
             process_queue[i] = createProcess(i, 1, 0, 0, 0, (i * 16) % PROCESS_SIZE, 1, 0, false, 0);
