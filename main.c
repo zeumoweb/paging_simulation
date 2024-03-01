@@ -20,7 +20,7 @@ int main(int argv, char *argc[])
     int NUMBER_OF_PROCESS;                                         // N: The number of processes
     char *REPLACEMENT_ALGORITH;                                    // Algo: The replacement policy lifo, random, or lru
     int TOTAL_NUMBER_OF_FRAMES = (double)MACHINE_SIZE / PAGE_SIZE; // Number of frames
-    int page_length = 10;
+    int page_length = TOTAL_NUMBER_OF_FRAMES;
     int GLOBAL_EVICTIONS = 0; // Global evictions counter
     int InnerPageTableSize = 4;
     int OuterPageTableSize = 4;
