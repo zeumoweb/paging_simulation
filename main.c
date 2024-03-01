@@ -5,7 +5,7 @@
 #include "utils_functions.h"
 #include "simulation.h"
 
-// Command Line Order : Machine Size, Page Size, Process Size, Memory Access Pattern, Number of References per Process, Number of Processes, Replacement Algorithm
+// Command Line Order : Machine Size, Page Size, Process Size, Memory Access Pattern, Number of References per Process, Number of Processes, Verbose, Replacement Algorithm
 
 int main(int argv, char *argc[])
 {
@@ -32,11 +32,11 @@ int main(int argv, char *argc[])
 
     // Initialize the frame table and process queue
     FrameTableEntry **frame_table = initializeFrameTable(TOTAL_NUMBER_OF_FRAMES);
-    Process **process_queue =  initializeProcessQueue(MEMORY_ACCESS_PATTERN, PROCESS_SIZE, NUMBER_OF_PROCESS);
+    Process **process_queue = initializeProcessQueue(MEMORY_ACCESS_PATTERN, PROCESS_SIZE, NUMBER_OF_PROCESS);
 
     // Initialize array to hold the address history of each process
     int **process_address_history = initializeProcessAddressHistory(NUMBER_OF_PROCESS, NUMBER_OF_REFERENCES_PER_PROCESS);
-   
+
     // Initialize Two level page table
     page_entry_t *outer_page_table = createOuterPageTable(OuterPageTableSize);
     page_entry_t **inner_page_tables = createInnerPageTable(InnerPageTableSize, page_length);
@@ -65,7 +65,7 @@ int main(int argv, char *argc[])
                 int current_page = get_page_number(logical_address, outer_page_table, inner_page_tables, InnerPageTableSize, OuterPageTableSize, PAGE_SIZE);
                 int randomNumber = generateRandomNumberInRange(2013279579, 2013279579 + 100000); // ToDo: Get random number from file or generate it
 
-
+                printf("Process #%d references address %d (page %d) at time %d: ", i + 1, logical_address, current_page, CURRENT_TIME);
 
                 // page table hit
                 if (frameTableIsHit(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES))
@@ -74,9 +74,7 @@ int main(int argv, char *argc[])
                     int hitIndex = hitFrame(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES);
                     frame_table[hitIndex]->isLoaded = true;
 
-
-                        printf("Hit in frame %d\n", hitFrame(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES));
-
+                    printf("Hit in frame %d\n", hitFrame(frame_table, process_queue[i]->processID, current_page, TOTAL_NUMBER_OF_FRAMES));
                 }
                 else
                 {
