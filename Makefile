@@ -1,5 +1,5 @@
 CC = gcc
-SRC = main.c frame.c pageTable.c process.c utils_functions.c node.c replacement_algorithms.c
+SRC = main.c frame.c pageTable.c process.c utils_functions.c node.c replacement_algorithms.c simulation.c
 OBJ = $(SRC:.c=.o)
 EXEC = program
 

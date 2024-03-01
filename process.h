@@ -53,6 +53,6 @@ void printOutput(Process **process_queue, int GLOBAL_EVICTIONS, int num_process)
 bool areAllProcessesFinished(Process **process_queue, int SIZE);
 
 // Function to handle page fault
-int handlePageFault(char* replacement_algorithm, bool IS_VERBOSE, Process **process_queue, FrameTableEntry **frame_table, int TOTAL_NUMBER_OF_PAGES, int PAGE_SIZE, int CURRENT_TIME, int *GLOBAL_EVICTIONS, int process_id, int current_page);
+int handlePageFault(char* replacement_algorithm, Process **process_queue, FrameTableEntry **frame_table, int TOTAL_NUMBER_OF_PAGES, int PAGE_SIZE, int CURRENT_TIME, int *GLOBAL_EVICTIONS, int process_id, int current_page);
 
 void freeProcessQueue(Process **process_queue, int SIZE);

@@ -122,12 +122,12 @@ void printOutput(Process **process_queue, int GLOBAL_EVICTIONS, int num_process)
 
 
 
-int handlePageFault(char* replacement_policy, bool IS_VERBOSE, Process **process_queue, FrameTableEntry **frame_table, int TOTAL_NUMBER_OF_PAGES, int PAGE_SIZE, int CURRENT_TIME, int *GLOBAL_EVICTIONS, int process_id, int current_page)
+int handlePageFault(char* replacement_policy, Process **process_queue, FrameTableEntry **frame_table, int TOTAL_NUMBER_OF_PAGES, int PAGE_SIZE, int CURRENT_TIME, int *GLOBAL_EVICTIONS, int process_id, int current_page)
 {
 
     int frameIndex = -1;
     // Page miss: Fault
-    if (IS_VERBOSE)
+
         printf("Page Fault, ");
 
     process_queue[process_id]->numberOfFaults++;
@@ -157,7 +157,7 @@ int handlePageFault(char* replacement_policy, bool IS_VERBOSE, Process **process
 
         frame_table[evictedFrameIndex] = newFrame;
 
-        if (IS_VERBOSE)
+
             printf("Evicting page %d of process id #%d from frame %d \n",
                    evictedPage, evictedFrame->processNumber + 1, evictedFrameIndex);
         frameIndex = evictedFrameIndex;
@@ -194,7 +194,7 @@ int handlePageFault(char* replacement_policy, bool IS_VERBOSE, Process **process
                 process_id, current_page, false, false,
                 CURRENT_TIME, indexOdHighestFreeFrame, true);
 
-            if (IS_VERBOSE)
+
                 printf("Using free frame %d\n", indexOdHighestFreeFrame);
             
             frameIndex = indexOdHighestFreeFrame;

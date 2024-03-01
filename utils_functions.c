@@ -4,27 +4,27 @@
 page_entry_t *get_page_entry(int logical_address, page_entry_t *L1_table, page_entry_t **L2_tables, int l1_size, int l2_size, int page_size)
 {
 
-    // Extract L1_page_number, L2_page_number, and offset from logical address
-    int L1_page_number = (logical_address >> (bitLength(l1_size - 1) + bitLength(page_size - 1))) & (l1_size - 1);
-    int L2_page_number = (logical_address >> bitLength(page_size - 1)) & (l2_size - 1);
-    int offset = logical_address & (page_size - 1);
+    // Extract level1_index, level2_index, and offset from logical address
+    int level1_index = (logical_address / page_size) / l2_size;
+    int level2_index = (logical_address / page_size) % l2_size;
+    int offset = logical_address % page_size;
 
     // Check if L1 page table entry is valid
-    if (!L1_table[L1_page_number].valid)
+    if (!L1_table[level1_index].valid)
     {
         // Page fault
         return NULL;
     }
 
-    page_entry_t *L2_table = L2_tables[L1_page_number];
+    page_entry_t *L2_table = L2_tables[level1_index];
     // Check if L2 page table entry is valid
-    if (!L2_table[L2_page_number].valid)
+    if (!L2_table[level2_index].valid)
     {
         return NULL;
     }
 
     // Get L2 page table address from L1 entry
-    page_entry_t *page_entry = L2_tables[L1_table[L1_page_number].frame_number];
+    page_entry_t *page_entry = L2_tables[L1_table[level1_index].frame_number];
     return page_entry;
 }
 
@@ -36,7 +36,7 @@ int get_physical_address(int logical_address, page_entry_t *L1_table, page_entry
         return -1;
     }
 
-    int offset = logical_address & (page_size - 1);
+    int offset = logical_address % page_size;
     int physical_address = page_entry->frame_number * page_size + offset;
     return physical_address;
 }
@@ -44,44 +44,38 @@ int get_physical_address(int logical_address, page_entry_t *L1_table, page_entry
 int get_page_number(int logical_address, page_entry_t *L1_table, page_entry_t **L2_tables, int l1_size, int l2_size, int page_size)
 {
 
-    // Extract L1_page_number, L2_page_number, and offset from logical address
-    int L1_page_number = (logical_address >> (bitLength(l1_size - 1) + bitLength(page_size - 1))) & (l1_size - 1);
-    int L2_page_number = (logical_address >> bitLength(page_size - 1)) & (l2_size - 1);
-    int offset = logical_address & (page_size - 1);
+    // Extract level1_index, level2_index, and offset from logical address
+    int level1_index = (logical_address / page_size) / l2_size;
+    int level2_index = (logical_address / page_size) % l2_size;
+    int offset = logical_address % page_size;
 
-    return L2_page_number;
+    return level2_index;
 }
 
 
 void insertToPageTables(int logical_address, page_entry_t *L1_table, page_entry_t **L2_tables, int l1_size, int l2_size, int page_size, int frame_number)
 {
-    // Extract L1_page_number, L2_page_number, and offset from logical address
-    int L1_page_number = (logical_address >> (bitLength(l1_size - 1) + bitLength(page_size - 1))) & (l1_size - 1);
-    int L2_page_number = (logical_address >> bitLength(page_size - 1)) & (l2_size - 1);
-    int offset = logical_address & (page_size - 1);
+    // Extract level1_index, level2_index, and offset from logical address
+    int level1_index = (logical_address >> (bitLength(l1_size - 1) + bitLength(page_size - 1))) & (l1_size - 1);
+    int level2_index = (logical_address >> bitLength(page_size - 1)) & (l2_size - 1);
+    int offset = logical_address % page_size;
 
     // Allocate memory for page table if needed
-    if (!L1_table[L1_page_number].valid)
+    if (!L1_table[level1_index].valid)
     {
-        L1_table[L1_page_number].valid = true;
-        L1_table[L1_page_number].frame_number = L2_page_number;
+        L1_table[level1_index].valid = true;
+        L1_table[level1_index].frame_number = level2_index;
     }
 
     // Update page table entry
-    L2_tables[L1_page_number][L2_page_number].valid = true;
-    L2_tables[L1_page_number][L2_page_number].frame_number = frame_number;
+    L2_tables[level1_index][level2_index].valid = true;
+    L2_tables[level1_index][level2_index].frame_number = frame_number;
 }
 
 // Function to calculate the bit length of an integer
 int bitLength(int n)
 {
-    int length = 0;
-    while (n != 0)
-    {
-        n >>= 1;
-        length++;
-    }
-    return length;
+    return log2(n) + 1;
 }
 
 int generateRandomNumberInRange(int lowerBound, int upperBound)
@@ -92,7 +86,6 @@ int generateRandomNumberInRange(int lowerBound, int upperBound)
         exit(1);
     }
 
-    srand(time(NULL));
 
     // Generate a random number within the inclusive range
     int randomNumber = (rand() % (upperBound - lowerBound + 1)) + lowerBound;
@@ -101,9 +94,18 @@ int generateRandomNumberInRange(int lowerBound, int upperBound)
 }
 
 
+float random_float_0_1() {
+  // Generate a random integer between 0 (inclusive) and RAND_MAX (exclusive)
+  int random_int = rand();
+
+  // Convert the integer to a float between 0.0 and 1.0 (inclusive)
+  return (double)random_int / (double)RAND_MAX;
+}
+
+
 
 void validateArgs(int argc, char *argv[]) {
-    if (argc != 9) {
+    if (argc != 8) {
         perror("Invalid number of arguments provided. Please provide 8 arguments. \n");
         exit(1);
     }
@@ -125,15 +127,14 @@ void validateArgs(int argc, char *argv[]) {
 
 
 
-void setFlags(int argc, char *argv[], int *MACHINE_SIZE, int *PAGE_SIZE, int *PROCESS_SIZE, int *MEMORY_ACCESS_PATTERN, int *NUMBER_OF_REFERENCES_PER_PROCESS, int *NUMBER_OF_PROCESS, bool *IS_VERBOSE, char **REPLACEMENT_ALGORITHM, int *TOTAL_NUMBER_OF_PAGES) {
+void setFlags(int argc, char *argv[], int *MACHINE_SIZE, int *PAGE_SIZE, int *PROCESS_SIZE, int *MEMORY_ACCESS_PATTERN, int *NUMBER_OF_REFERENCES_PER_PROCESS, int *NUMBER_OF_PROCESS, char **REPLACEMENT_ALGORITHM, int *TOTAL_NUMBER_OF_PAGES) {
     *MACHINE_SIZE = atoi(argv[1]);
     *PAGE_SIZE = atoi(argv[2]);
     *PROCESS_SIZE = atoi(argv[3]);
     *MEMORY_ACCESS_PATTERN = atoi(argv[4]);
     *NUMBER_OF_REFERENCES_PER_PROCESS = atoi(argv[5]);
     *NUMBER_OF_PROCESS = atoi(argv[6]);
-    *IS_VERBOSE = (atoi(argv[7]) == 1);  // Invert logic
-    *REPLACEMENT_ALGORITHM = argv[8];
+    *REPLACEMENT_ALGORITHM = argv[7];
 
     *TOTAL_NUMBER_OF_PAGES = (int)ceil((double)*MACHINE_SIZE / *PAGE_SIZE);
 }

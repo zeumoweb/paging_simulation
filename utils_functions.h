@@ -29,4 +29,7 @@ void validateArgs(int argc, char *argv[]);
 
 
 // Function to set flags based on command line arguments
-void setFlags(int argc, char *argv[], int *MACHINE_SIZE, int *PAGE_SIZE, int *PROCESS_SIZE, int *MEMORY_ACCESS_PATTERN, int *NUMBER_OF_REFERENCES_PER_PROCESS, int *NUMBER_OF_PROCESS, bool *IS_VERBOSE, char **REPLACEMENT_ALGORITHM, int *TOTAL_NUMBER_OF_PAGES);
+void setFlags(int argc, char *argv[], int *MACHINE_SIZE, int *PAGE_SIZE, int *PROCESS_SIZE, int *MEMORY_ACCESS_PATTERN, int *NUMBER_OF_REFERENCES_PER_PROCESS, int *NUMBER_OF_PROCESS, char **REPLACEMENT_ALGORITHM, int *TOTAL_NUMBER_OF_PAGES);
+
+// Generate Random Number between O and 1
+float random_float_0_1();
