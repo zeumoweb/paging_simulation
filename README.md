@@ -23,7 +23,7 @@ To run the tests using the provided Bash script (`test.sh`), follow these steps:
     ./test.sh test3
     ```
     ```bash
-    ./test.sh test3
+    ./test.sh test4
     ```
 ## Running Using Custom Command Line Arguments (The hard way)
 
