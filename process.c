@@ -54,9 +54,6 @@ void setNextReferencedAddress(Process *process, int randomNumber, int PROCESS_SI
     }
 }
 
-int getCurrentPage(Process *process, int pageSize) {
-    return process->currentAddress / pageSize;
-}
 
 
 
@@ -85,7 +82,7 @@ void printOutput(Process **process_queue, int GLOBAL_EVICTIONS, int num_process)
     {
         Process *currentProcess = process_queue[i];
         totalNumberOfFaults += currentProcess->numberOfFaults;
-        printf("Process %d had %d faults", currentProcess->processID, currentProcess->numberOfFaults);
+        printf("Process %d had %d faults", currentProcess->processID + 1, currentProcess->numberOfFaults);
 
         if (currentProcess->numberOfEvictions > 0)
         {
